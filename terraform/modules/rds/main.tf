@@ -13,6 +13,7 @@ resource "aws_rds_cluster" "aurora" {
   skip_final_snapshot     = true
   storage_encrypted       = true
   allow_major_version_upgrade = var.allow_major_version_upgrade
+  enable_http_endpoint    = false
   
   lifecycle {
     ignore_changes = [master_password]
@@ -27,6 +28,7 @@ resource "aws_rds_cluster_instance" "instances" {
   engine             = aws_rds_cluster.aurora.engine
   engine_version     = aws_rds_cluster.aurora.engine_version
   publicly_accessible = false
+  promotion_tier     = count.index + 1
 }
 
 resource "aws_db_subnet_group" "main" {
