@@ -1,10 +1,10 @@
 resource "aws_rds_cluster" "aurora" {
-  cluster_identifier      = var.cluster_identifier
-  engine                  = var.engine
-  engine_version          = "13.7"
-  database_name           = "onfinance"
-  master_username         = var.database_username
-  master_password         = var.database_password
+  cluster_identifier      = "${var.name_prefix}-aurora-cluster"
+  engine                  = "aurora-postgresql"
+  engine_version          = var.engine_version
+  database_name           = var.database_name
+  master_username         = var.master_username
+  master_password         = var.master_password
   backup_retention_period = 7
   preferred_backup_window = "07:00-09:00"
   vpc_security_group_ids  = [aws_security_group.rds.id]
@@ -15,7 +15,7 @@ resource "aws_rds_cluster" "aurora" {
 
 resource "aws_rds_cluster_instance" "instances" {
   count              = 2
-  identifier         = "${var.cluster_identifier}-${count.index}"
+  identifier         = "${var.name_prefix}-aurora-instance-${count.index}"
   cluster_identifier = aws_rds_cluster.aurora.id
   instance_class     = var.instance_class
   engine             = aws_rds_cluster.aurora.engine
@@ -23,6 +23,30 @@ resource "aws_rds_cluster_instance" "instances" {
 }
 
 resource "aws_db_subnet_group" "main" {
-  name       = "${var.cluster_identifier}-subnet-group"
+  name       = "${var.name_prefix}-subnet-group"
   subnet_ids = var.private_subnets
+  tags = {
+    Name = "${var.name_prefix}-subnet-group"
+  }
+}
+
+resource "aws_security_group" "rds" {
+  name        = "${var.name_prefix}-rds-sg"
+  description = "Allow traffic to Aurora from EKS"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    description = "Allow PostgreSQL from EKS"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
