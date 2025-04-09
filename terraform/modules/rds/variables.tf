@@ -39,9 +39,14 @@ variable "master_password" {
 variable "engine_version" {
   description = "PostgreSQL engine version"
   type        = string
-  default     = "13.7"
+  default     = "13.6" 
 }
 
+variable "allow_major_version_upgrade" {
+  description = "Enable major version upgrade"
+  type        = bool
+  default     = false
+}
 variable "instance_class" {
   description = "Instance class for database"
   type        = string
