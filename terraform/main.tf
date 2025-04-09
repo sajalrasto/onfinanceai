@@ -28,9 +28,10 @@ module "eks" {
 module "database" {
   source = "./modules/rds"
   
-  cluster_identifier = "onfinance-ai-db"
-  engine             = "aurora-postgresql"
-  instance_class     = "db.t3.medium"
-  vpc_id             = module.networking.vpc_id
-  private_subnets    = module.networking.private_subnets
+  name_prefix      = "onfinance-ai"
+  vpc_id          = module.networking.vpc_id
+  private_subnets = module.networking.private_subnets
+  master_username = var.database_username
+  master_password = var.database_password
+  instance_class  = "db.t3.medium"
 }
