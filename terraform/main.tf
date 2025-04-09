@@ -35,4 +35,5 @@ module "database" {
   master_username = var.database_username
   master_password = var.database_password
   instance_class  = "db.t3.medium"
+  engine_version  = "13.6"  
 }
