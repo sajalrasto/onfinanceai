@@ -24,7 +24,18 @@ output "cluster_name" {
 }
 
 output "database_endpoint" {
-  description = "RDS endpoint"
-  value       = module.database.endpoint
+  description = "RDS cluster endpoint"
+  value       = module.database.cluster_endpoint
   sensitive   = true
+}
+
+output "database_reader_endpoint" {
+  description = "RDS reader endpoint"
+  value       = module.database.reader_endpoint
+  sensitive   = true
+}
+
+output "database_security_group_id" {
+  description = "RDS security group ID"
+  value       = module.database.security_group_id
 }
