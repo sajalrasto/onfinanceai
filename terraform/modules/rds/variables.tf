@@ -39,7 +39,7 @@ variable "master_password" {
 variable "engine_version" {
   description = "PostgreSQL engine version"
   type        = string
-  default     = "13.6" 
+  default     = "15.3"  # Current stable version as of 2023
 }
 
 variable "allow_major_version_upgrade" {
