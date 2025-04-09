@@ -30,6 +30,7 @@ module "database" {
   
   name_prefix      = "onfinance-ai"
   vpc_id          = module.networking.vpc_id
+  vpc_cidr        = module.networking.vpc_cidr_block
   private_subnets = module.networking.private_subnets
   master_username = var.database_username
   master_password = var.database_password
