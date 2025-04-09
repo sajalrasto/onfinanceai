@@ -2,6 +2,7 @@ resource "aws_rds_cluster" "aurora" {
   cluster_identifier      = "${var.name_prefix}-aurora-cluster"
   engine                  = "aurora-postgresql"
   engine_version          = var.engine_version
+  engine_mode             = "provisioned"
   database_name           = var.database_name
   master_username         = var.master_username
   master_password         = var.master_password
@@ -11,6 +12,11 @@ resource "aws_rds_cluster" "aurora" {
   db_subnet_group_name    = aws_db_subnet_group.main.name
   skip_final_snapshot     = true
   storage_encrypted       = true
+  allow_major_version_upgrade = var.allow_major_version_upgrade
+  
+  lifecycle {
+    ignore_changes = [master_password]
+  }
 }
 
 resource "aws_rds_cluster_instance" "instances" {
@@ -20,6 +26,7 @@ resource "aws_rds_cluster_instance" "instances" {
   instance_class     = var.instance_class
   engine             = aws_rds_cluster.aurora.engine
   engine_version     = aws_rds_cluster.aurora.engine_version
+  publicly_accessible = false
 }
 
 resource "aws_db_subnet_group" "main" {
